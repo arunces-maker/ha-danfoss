@@ -15,13 +15,13 @@ COPY config.yaml /tmp/config.yaml
 # Falls back to 'latest' if the versioned release doesn't exist yet.
 RUN VERSION=$(grep '^version:' /tmp/config.yaml | head -1 | sed 's/version: *"//;s/"$//') && \
     echo "Add-on version: $VERSION" && \
-    if curl -L -f -o /app.jar "https://github.com/soundvibe/ha-danfoss/releases/download/v${VERSION}/ha-danfoss-addon.jar" 2>/dev/null; then \
+    if curl -L -f -o /app.jar "https://github.com/arunces-maker/ha-danfoss/releases/download/v${VERSION}/ha-danfoss-addon.jar" 2>/dev/null; then \
       echo "Downloaded JAR for v${VERSION}"; \
-    elif curl -L -f -o /app.jar "https://github.com/soundvibe/ha-danfoss/releases/download/${VERSION}/ha-danfoss-addon.jar" 2>/dev/null; then \
+    elif curl -L -f -o /app.jar "https://github.com/arunces-maker/ha-danfoss/releases/download/${VERSION}/ha-danfoss-addon.jar" 2>/dev/null; then \
       echo "Downloaded JAR for ${VERSION}"; \
     else \
       echo "Versioned release not found, falling back to latest" && \
-      curl -L -o /app.jar "https://github.com/soundvibe/ha-danfoss/releases/latest/download/ha-danfoss-addon.jar"; \
+      curl -L -o /app.jar "https://github.com/arunces-maker/ha-danfoss/releases/latest/download/ha-danfoss-addon.jar"; \
     fi
 
 CMD [ "/run.sh" ]
