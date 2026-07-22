@@ -136,19 +136,32 @@ public class Bootstrapper {
         var homeAssistantClient = new HomeAssistantClient(token);
         return scheduler.scheduleAtFixedRate(() -> {
             try {
-                for (var room : masterHandler.listRooms()) {
-                    var sensorName = String.format(options.sensorNameFmt(), room.number());
-                    var state = room.toState();
-                    homeAssistantClient.upsertState(state, sensorName);
-                }
-
                 var iconMaster = masterHandler.iconMaster();
-                homeAssistantClient.upsertState(iconMaster.toState(), "sensor.danfoss_master_controller_last_updated");
+            var houseId = normalizeEntityPart(iconMaster.houseName());
+
+            for (var room : masterHandler.listRooms()) {
+                var sensorName = "sensor.danfoss_%s_%d_temperature"
+                        .formatted(houseId, room.number());
+                var state = room.toState();
+                homeAssistantClient.upsertState(state, sensorName);
+            }
+
+            var masterSensorName = "sensor.danfoss_%s_master_controller_last_updated"
+                    .formatted(houseId);
+            homeAssistantClient.upsertState(iconMaster.toState(), masterSensorName);
                 logger.info("sensors updated successfully");
             } catch (Exception e) {
                 logger.error("sensor update error", e);
             }
         }, 1, options.haUpdatePeriodInSeconds(), TimeUnit.SECONDS);
+    }
+
+    private static String normalizeEntityPart(String value) {
+        var normalized = value.toLowerCase(java.util.Locale.ROOT)
+                .replaceAll("[^a-z0-9]+", "_")
+                .replaceAll("^_+|_+$", "");
+
+        return normalized.isEmpty() ? "default" : normalized;
     }
 
     private String resolveToken() {
