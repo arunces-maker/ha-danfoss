@@ -1,9 +1,9 @@
 name: "Danfoss Icon"
 description: "Danfoss Icon Master Controller Addon"
-version: "0.4.10"
+version: "0.5.0"
 slug: "danfoss"
 init: false
-url: "https://github.com/soundvibe/ha-danfoss"
+url: "https://github.com/arunces-maker/ha-danfoss"
 homeassistant_api: true
 webui: "http://[HOST]:[PORT:9199]"
 watchdog: "http://[HOST]:[PORT:9199]/health"
@@ -11,6 +11,10 @@ map:
   - share:rw
 ports:
   9199/tcp: 9199
+  9200/tcp: 9200
+ports_description:
+  9199/tcp: "Danfoss Icon house 1A setup"
+  9200/tcp: "Danfoss Icon house 2A setup"
 options:
   haUpdatePeriodInSeconds: 60
   sensorNameFmt: "sensor.danfoss_%d_temperature"

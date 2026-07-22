@@ -26,11 +26,11 @@ public class Application {
 
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    public static final Path DANFOSS_CONFIG_FILE = Paths.get("/share/danfoss-icon/danfoss_config.json");
-    public static final Path DANFOSS_CONFIG_FILE_LOCAL = Paths.get("danfoss_config.json");
-    public static final Path DANFOSS_CONFIG_DIR = Paths.get("/share/danfoss-icon");
+    public static final Path DANFOSS_CONFIG_FILE = Paths.get(System.getProperty("DANFOSS_CONFIG_FILE", "/share/danfoss-icon/danfoss_config.json"));
+    public static final Path DANFOSS_CONFIG_FILE_LOCAL = DANFOSS_CONFIG_FILE;
+    public static final Path DANFOSS_CONFIG_DIR = DANFOSS_CONFIG_FILE.getParent();
     public static final Path ADDON_CONFIG_FILE = Paths.get("/data/options.json");
-    public static final List<Path> CONFIG_FILES = List.of(DANFOSS_CONFIG_FILE, DANFOSS_CONFIG_FILE_LOCAL);
+    public static final List<Path> CONFIG_FILES = List.of(DANFOSS_CONFIG_FILE);
     public static void main(String[] args) {
         logger.info("starting danfoss icon addon...");
         var options = Options.fromPath(ADDON_CONFIG_FILE);
@@ -67,8 +67,8 @@ public class Application {
                     var appConfigJson = Json.toJsonString(appConfig);
                     ctx.html(STR."""
       <h1>Discovered Icon house <b>\{response.houseName}</b> successfully</h1>
-      <p>Write the following config to <i>/share/danfoss-icon/danfoss_config.json</i> if addon won't start properly</p>
-      <h3>danfoss_config.json</h3>
+      <p>Write the following config to <i>\{DANFOSS_CONFIG_FILE}</i> if addon won't start properly</p>
+      <h3>\{DANFOSS_CONFIG_FILE.getFileName()}</h3>
       <p style="background:#9FE2BF">
       {</br>
       &nbsp;&nbsp;"privateKey": \{ Arrays.toString(appConfig.privateKey()) },</br>
@@ -77,8 +77,8 @@ public class Application {
       }</br>
       </p>
       """);
-                    logger.info("discovered Icon house {} with {} peerId (privateKey: {}) successfully",
-                            response.houseName, response.housePeerId, Arrays.toString(bindingConfig.privateKey()));
+                    logger.info("discovered Icon house {} successfully",
+                            response.houseName);
                     Files.createDirectories(DANFOSS_CONFIG_DIR);
                     Files.writeString(DANFOSS_CONFIG_FILE, appConfigJson);
                     discovery.close();
@@ -103,7 +103,10 @@ public class Application {
                 }, () -> logger.info("config file not found, use ip:port/discover endpoint to discover new house"));
 
 
-        app.start(options.port());
+        var configuredPort = Integer.parseInt(
+                System.getProperty("DANFOSS_PORT", String.valueOf(options.port()))
+        );
+        app.start(configuredPort);
         logger.info("started addon");
     }
 

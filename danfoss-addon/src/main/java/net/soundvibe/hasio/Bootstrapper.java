@@ -57,7 +57,7 @@ public class Bootstrapper {
         this.masterHandler.set(masterHandler);
 
         var token = resolveToken();
-        logger.info("SUPERVISOR_TOKEN: {}", token);
+        logger.info("Home Assistant authorization token resolved: {}", !token.isEmpty());
         if (token.isEmpty()) {
             logger.warn("authorization token not found");
         } else {
@@ -157,11 +157,15 @@ public class Bootstrapper {
     }
 
     private static String normalizeEntityPart(String value) {
+        if (value == null || value.isBlank()) {
+            return "unknown_house";
+        }
+
         var normalized = value.toLowerCase(java.util.Locale.ROOT)
                 .replaceAll("[^a-z0-9]+", "_")
                 .replaceAll("^_+|_+$", "");
 
-        return normalized.isEmpty() ? "default" : normalized;
+        return normalized.isEmpty() ? "unknown_house" : normalized;
     }
 
     private String resolveToken() {
