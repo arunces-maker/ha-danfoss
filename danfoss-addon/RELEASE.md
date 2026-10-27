@@ -33,7 +33,7 @@ Open a PR (or push directly) with the version bump and changelog update, then me
 
 ### 4. Create a GitHub Release
 
-1. Go to the [**Releases**](https://github.com/soundvibe/ha-danfoss/releases) page on GitHub.
+1. Go to the [**Releases**](https://github.com/arunces-maker/ha-danfoss/releases) page on GitHub.
 2. Click **"Draft a new release"**.
 3. Choose **"Choose a new tag"** and enter the version (e.g., `v0.4.8`).
 4. Set the **Release title** (e.g., `v0.4.8`).
@@ -54,7 +54,7 @@ The [`Dockerfile`](./Dockerfile) downloads the JAR from the release artifacts wh
 
 ```dockerfile
 RUN VERSION=$(grep '^version:' /tmp/config.yaml | sed 's/version: *"//;s/"$//') && \
-    curl -L -o /app.jar "https://github.com/soundvibe/ha-danfoss/releases/download/v${VERSION}/ha-danfoss-addon.jar"
+    curl -L -o /app.jar "https://github.com/arunces-maker/ha-danfoss/releases/download/v${VERSION}/ha-danfoss-addon.jar"
 ```
 
 If the versioned release asset is not found, the Dockerfile falls back to the latest release asset.

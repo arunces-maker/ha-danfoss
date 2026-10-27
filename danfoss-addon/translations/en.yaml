@@ -4,13 +4,13 @@ configuration:
     description: "How often Home Assistant will be updated with changes from Danfoss Icon master controller (default: 60 seconds)"
   sensorNameFmt:
     name: "Sensor name format"
-    description: "Temperature values are exposed as HA states(sensors), here you can choose how they are named (using Java String.Format())"
+    description: "Ignored in this fork. Sensors are named sensor.danfoss_<name>_<room>_temperature from the controller's name in the Danfoss app."
   port:
     name: "Port"
-    description: "Addon web server port (default 9199)"
+    description: "Ignored in this fork. Controller 1A always uses port 9199 and controller 2A uses 9200."
   mqttEnabled:
     name: "MQTT Enabled"
-    description: "MQTT Enabled"
+    description: "MQTT auto discovery. Keep disabled with two controllers: MQTT IDs and topics are not split per controller yet."
   mqttHost:
     name: "MQTT Host"
     description: "MQTT Host (default core-mosquitto)"

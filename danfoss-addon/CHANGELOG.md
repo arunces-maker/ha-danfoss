@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.5.0]
+
+- Run two Danfoss Icon controllers at once (e.g. one per floor): controller 1A on port 9199 and controller 2A on port 9200, as two instances in one add-on.
+- Separate pairing files `/share/danfoss-icon/danfoss_config_1a.json` and `danfoss_config_2a.json`. An existing single-controller `danfoss_config.json` is migrated to controller 1A on first start.
+- Config file path and port can be set per instance with the `DANFOSS_CONFIG_FILE` and `DANFOSS_PORT` system properties.
+- Use `unknown_house` as the name part of sensor names when the controller's name is not known yet (in 0.4.9 that update failed with a `sensor update error`).
+- Stopped logging the pairing private key and the Supervisor token.
+- Known limitation: MQTT discovery IDs and topics are not split per controller; keep MQTT disabled with two controllers.
+
+## [0.4.10]
+
+- Docker image downloads the JAR from this fork's releases instead of upstream. This is the first release where the 0.4.9 code change actually takes effect.
+
+## [0.4.9]
+
+- Sensor names include the controller's (house) name from the Danfoss Icon app: `sensor.danfoss_<name>_<room>_temperature` and `sensor.danfoss_<name>_master_controller_last_updated`. `sensorNameFmt` is no longer used.
+- Note: this release still downloaded the upstream JAR, so it ran unchanged upstream code.
+
 ## [0.4.8]
 
 - Fixed NullPointerException in `IconMaster.toState()` when nullable string/Instant fields were not yet populated from device packets.

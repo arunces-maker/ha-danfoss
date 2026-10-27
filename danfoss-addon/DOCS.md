@@ -5,9 +5,9 @@
 | Parameter               | Description                                                                                                                                                                                                |
 |-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | haUpdatePeriodInSeconds | How often Home Assistant will be updated with changes from Danfoss Icon master controller (default: 60 seconds).                                                                                           |
-| sensorNameFmt           | Temperature values are exposed as HA states(sensors), here you can choose how they are named (using `Java` [String.Format()](https://docs.oracle.com/javase/21/docs/api/java/util/Formatter.html#syntax)). |
-| port                    | HTTP port to use for add-on's embedded web server                                                                                                                                                          |
-| mqttEnabled             | MQTT Home Assistant auto discovery is enabled                                                                                                                                                              |
+| sensorNameFmt           | **Ignored in this fork.** Sensor names are built from the controller's name in the Danfoss app: `sensor.danfoss_<name>_<room>_temperature` (see [README](README.md#home-assistant-sensors)). Kept only so existing configurations stay valid. |
+| port                    | **Ignored in this fork.** Ports are fixed: controller 1A on `9199`, controller 2A on `9200`. |
+| mqttEnabled             | MQTT Home Assistant auto discovery is enabled. **Keep disabled with two controllers**: MQTT IDs and topics are not split per controller yet (see [README](README.md#known-limitations)). |
 | mqttHost                | Host of MQTT broker                                                                                                                                                                                        |
 | mqttPort                | Port of MQTT broker                                                                                                                                                                                        |
 | mqttKeepAlive           | MQTT keep alive interval in seconds                                                                                                                                                                        |
@@ -16,6 +16,8 @@
 | logLevel                | Logger level (default: info)                                                                                                                                                                               |
 
 ## Setup climate devices in Home Assistant
+
+> **Two controllers:** each controller has its own REST endpoint. Send commands for controller 1A to port `9199` and for controller 2A to port `9200`, and use the `room_number` attribute of that controller's sensors. The examples below use upstream's single-controller sensor name `sensor.danfoss_0_temperature`; with this fork use e.g. `sensor.danfoss_namas_1a_0_temperature`. Each instance also serves `GET /rooms`, which lists that controller's rooms.
 
 It is enough to enable MQTT in add-on configuration and all house thermostats will be created in Home Assistant automatically.
 
