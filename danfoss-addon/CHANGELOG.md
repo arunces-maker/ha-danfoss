@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.5]
+
+- New `/command` actions `houseWeekAway` and `houseWeekHome` (POST `{"command":"houseWeekAway","roomNumber":0,"value":0}`): write the weekly schedule of every room of that controller as Away (`0c`+12x`aa`) or Home (`0c`+12x`00`) on all 7 days and set room control to schedule (4107=20), exactly what the Danfoss app sends after a schedule edit; the controller then switches the rooms by itself within about a minute. Each controller (ports 9199 and 9200) must be called separately.
+- At the default `info` log level the add-on now logs every CHANGE of a rarely-changing controller parameter (modes, plans, setpoints, room masks), as `controller change: ... old -> new`. The first value after connecting is remembered silently, and timestamps, temperatures, valve state and output classes are skipped, so only a few lines per day appear. Used to catch what the controller changes when it switches a floor to Away by itself, and what the Danfoss app sends to bring heating back.
+
 ## [0.5.4]
 
 - The `debug` packet log no longer shows the payload of connection-management (class 3) and software-update (class 4) packets, because they can contain key material. Only class and code are logged for those. Everything else is logged as in 0.5.3.

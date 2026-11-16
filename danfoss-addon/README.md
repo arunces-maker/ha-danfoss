@@ -44,6 +44,10 @@ Room sensors carry the same attributes as upstream: `room_number`, `mode`, `pres
 
 **What `mode` means.** `heat` means the room is calling for heat right now (its floor-heating valves are open); `off` means it has reached its target. It is not a heating-season switch. Checked against the Danfoss Icon app: the rooms shown as heating there were exactly the rooms with `mode: heat`, and every room with `mode: heat` was below its `temperature_target`. So "all rooms `off`" means all valves are closed.
 
+**Change log (0.5.5+, always on).** The add-on logs every change of a rarely-changing controller parameter at `info` level: `house=<name> controller change: room=<n> code=<code> <old> -> <new>` (`all-rooms` for parameters of the whole controller). Timestamps, temperatures and valve state are not logged. Useful to see what the controller or the Danfoss app changes.
+
+**Whole-house Away / Home (0.5.5+).** `POST /command` with `{"command":"houseWeekAway","roomNumber":0,"value":0}` (or `houseWeekHome`) sets every room's weekly schedule to Away / Home on all days. One call per controller (port 9199 = 1A, 9200 = 2A). Tested only by hand so far.
+
 **Debug logging (0.5.3+, payload filter from 0.5.4).** With `logLevel: debug` the add-on logs every packet it receives from the controller (house name, class, code, payload), except the clock (class 5) and the Wi-Fi scan list (class 2), which arrive every second. The payload of connection-management and software-update packets (class 3 and 4) is hidden because it can contain key material. It only listens; nothing is requested or written. Useful for finding out which parameter the Danfoss app changes. Keep `logLevel: info` in normal use.
 
 Things to know:
