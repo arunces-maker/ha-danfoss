@@ -91,9 +91,12 @@ public class IconMasterHandler implements PacketHandler {
 
         // Debug only: every packet from the controller, except the clock (SYSTEM) and the Wi-Fi scan list (WIFI),
         // which arrive constantly and aren't interesting.
+        // The payload of MDG (connection management) and SOFTWAREUPDATE packets can contain key material,
+        // so only class and code are logged for those.
         if (logger.isDebugEnabled() && msgClass != SYSTEM && msgClass != WIFI) {
+            var payload = (msgClass == MDG || msgClass == SOFTWAREUPDATE) ? "<hidden>" : pkt.payloadHex();
             logger.debug("packet house={} class={} code={} payload={}",
-                    state.houseName, msgClass, pkt.getMsgCode(), pkt.payloadHex());
+                    state.houseName, msgClass, pkt.getMsgCode(), payload);
         }
 
         if (msgClass >= ROOM_FIRST && msgClass <= ROOM_LAST) {

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.4]
+
+- The `debug` packet log no longer shows the payload of connection-management (class 3) and software-update (class 4) packets, because they can contain key material. Only class and code are logged for those. Everything else is logged as in 0.5.3.
+
 ## [0.5.3]
 
 - With `logLevel: debug` the add-on logs every packet received from the controller (house name, class, code, payload), except the clock and the Wi-Fi scan list. The read-only valve/output requests added in 0.5.2 are removed again: the add-on only listens now. Used to find out which controller parameter changes when the Danfoss app switches Away / heating season on and off.
