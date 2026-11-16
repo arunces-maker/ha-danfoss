@@ -9,6 +9,7 @@ A fork of [soundvibe/ha-danfoss](https://github.com/soundvibe/ha-danfoss) (based
 - **Controller 1A**: port `9199`, pairing file `/share/danfoss-icon/danfoss_config_1a.json`
 - **Controller 2A**: port `9200`, pairing file `/share/danfoss-icon/danfoss_config_2a.json`
 - Sensor names include the controller's house name from the Danfoss Icon app: `sensor.danfoss_<name>_<room>_temperature`, `sensor.danfoss_<name>_master_controller_last_updated`. If the name isn't known yet, `unknown_house` is used.
+- Room sensor attribute `mode` (`heat`/`off`) means the room is calling for heat, i.e. its valves are open; it is not a season switch (verified against the Danfoss app). `logLevel: debug` logs unhandled packets and, from 0.5.2, also sends read-only valve/output requests; use it only temporarily.
 - An old single-controller `danfoss_config.json` is copied to `_1a` on start if `_1a` doesn't exist.
 
 **This repo is public.** Never commit personal info: IP addresses, house/controller names, pairing files, private keys, tokens, logs from the real system.
