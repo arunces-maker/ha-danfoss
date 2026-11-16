@@ -150,6 +150,10 @@ public class IconRoomHandler implements PacketHandler {
             case ROOM_HEATINGCOOLINGCONFIGURATION:
                 logger.debug("room heating/cooling configuration={}", pkt.getByte());
                 break;
+            default:
+                logger.debug("unhandled room packet: class={} code={} payload={}",
+                        pkt.getMsgClass(), pkt.getMsgCode(), pkt.payloadHex());
+                break;
         }
     }
 
