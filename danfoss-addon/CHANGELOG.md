@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.1]
+
+- Unhandled controller packets are logged at `debug` level (class, code, payload). Passive only: nothing new is requested from the controller. Used to find out whether the controller reports valve/actuator state that the add-on ignores.
+
 ## [0.5.0]
 
 - Run two Danfoss Icon controllers at once (e.g. one per floor): controller 1A on port 9199 and controller 2A on port 9200, as two instances in one add-on.
