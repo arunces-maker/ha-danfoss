@@ -136,6 +136,7 @@ public class Bootstrapper {
         var homeAssistantClient = new HomeAssistantClient(token);
         return scheduler.scheduleAtFixedRate(() -> {
             try {
+                masterHandler.probeValveState(); // debug log level only
                 var iconMaster = masterHandler.iconMaster();
             var houseId = normalizeEntityPart(iconMaster.houseName());
 
