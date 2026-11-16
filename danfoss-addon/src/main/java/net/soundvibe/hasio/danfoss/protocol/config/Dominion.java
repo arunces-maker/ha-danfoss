@@ -124,6 +124,16 @@ public class Dominion {
             return Byte.toUnsignedInt(m_Buffer.get(m_Start + 3));
         }
 
+        /** Payload as hex, for debug logging. Uses absolute reads, so it doesn't move the buffer position. */
+        public String payloadHex() {
+            var sb = new StringBuilder();
+            int len = getPayloadLength();
+            for (int i = 0; i < len; i++) {
+                sb.append(String.format("%02x", m_Buffer.get(m_Start + HeaderSize + i)));
+            }
+            return sb.toString();
+        }
+
         public int getLength() {
             return getPayloadLength() + HeaderSize;
         }

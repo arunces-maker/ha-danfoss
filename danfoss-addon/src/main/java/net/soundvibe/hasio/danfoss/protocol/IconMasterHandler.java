@@ -144,6 +144,10 @@ public class IconMasterHandler implements PacketHandler {
                     state.connectionCount = pkt.getByte();
                     lock.writeLock().unlock();
                     break;
+                default:
+                    logger.debug("unhandled packet: class={} code={} payload={}",
+                            msgClass, pkt.getMsgCode(), pkt.payloadHex());
+                    break;
             }
         }
     }
