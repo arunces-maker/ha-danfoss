@@ -106,6 +106,17 @@ public class Bootstrapper {
     private void executeCommand(Command cmd) {
         logger.info("executing cmd: {}", cmd.command());
 
+        // Whole house (all rooms of this controller): the weekly schedule of every room all Home or all Away.
+        if ("houseWeekHome".equals(cmd.command()) || "houseWeekAway".equals(cmd.command())) {
+            var away = "houseWeekAway".equals(cmd.command());
+            for (var room : this.masterHandler.get().listRooms()) {
+                this.masterHandler.get().roomHandlerByNumber(room.number())
+                        .ifPresent(handler -> handler.setWholeWeek(away));
+            }
+            logger.info("whole week set to {} for all rooms of this controller", away ? "AWAY" : "HOME");
+            return;
+        }
+
         var maybeRoom = this.masterHandler.get().roomHandlerByNumber(cmd.roomNumber());
         if (maybeRoom.isEmpty()) {
             logger.info("room not found: {}", cmd.roomNumber());

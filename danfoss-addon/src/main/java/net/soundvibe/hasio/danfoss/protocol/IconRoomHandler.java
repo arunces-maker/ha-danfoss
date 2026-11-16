@@ -162,6 +162,19 @@ public class IconRoomHandler implements PacketHandler {
         this.connector.SendPacket(new Dominion.Packet(ROOM_FIRST + roomNumber, ROOM_ROOMTEMPERATURE));
     }
 
+    /**
+     * Writes the same schedule to all 7 days (Home or Away all day) and switches the room to "follow the schedule",
+     * exactly what the Danfoss app sends when a schedule is edited. The controller then moves the room to Home/Away
+     * by itself within about a minute.
+     */
+    public void setWholeWeek(boolean away) {
+        var roomClass = ROOM_FIRST + roomNumber;
+        for (int code = ROOM_SCHEDULEMONDAY; code <= ROOM_SCHEDULESUNDAY; code++) {
+            this.connector.SendPacket(new Dominion.Packet(roomClass, code, WeekSchedule.day(away)));
+        }
+        this.connector.SendPacket(new Dominion.Packet(roomClass, ROOM_ROOMCONTROL, Icon.RoomControl.Schedule));
+    }
+
     public void setHomeTemperature(double newTemperature) {
         this.connector.SendPacket(new Dominion.Packet(ROOM_FIRST + roomNumber, ROOM_SETPOINTATHOME, newTemperature));
         lock.writeLock().lock();

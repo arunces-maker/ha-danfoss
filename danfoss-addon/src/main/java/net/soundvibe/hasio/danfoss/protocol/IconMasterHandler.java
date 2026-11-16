@@ -25,6 +25,7 @@ public class IconMasterHandler implements PacketHandler {
     private final Map<String, IconRoomHandler> roomsByName = new ConcurrentHashMap<>(ICON_MAX_ROOMS * 2);
 
     private static final Logger logger = LoggerFactory.getLogger(IconMasterHandler.class);
+    private final ChangeJournal changeJournal = new ChangeJournal();
 
     private static class IconMasterControllerState {
         private String houseName;
@@ -88,6 +89,11 @@ public class IconMasterHandler implements PacketHandler {
     @Override
     public void handlePacket(Dominion.Packet pkt) {
         int msgClass = pkt.getMsgClass();
+
+        // Always on (info level): what the controller changes by itself, or when the Danfoss app changes something.
+        // Only changes of rarely-changing parameters are logged, see ChangeJournal.
+        changeJournal.record(msgClass, pkt.getMsgCode(), pkt.payloadHex())
+                .ifPresent(line -> logger.info("house={} {}", state.houseName, line));
 
         // Debug only: every packet from the controller, except the clock (SYSTEM) and the Wi-Fi scan list (WIFI),
         // which arrive constantly and aren't interesting.
