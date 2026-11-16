@@ -64,6 +64,32 @@ public class IconMasterHandler implements PacketHandler {
         }
     }
 
+    /**
+     * Debug only: asks the controller to report valve/output state (read requests, no data is written).
+     * The answers arrive as packets and are logged by the "unhandled packet" branches.
+     */
+    public void probeValveState() {
+        if (!logger.isDebugEnabled()) {
+            return;
+        }
+        logger.debug("probing valve/output state");
+        for (int railClass = RAIL_FIRST; railClass <= RAIL_LAST; railClass++) {
+            for (int code : new int[]{RAIL_GLOBALOUTPUTACTIVE, RAIL_LOCALOUTPUTACTIVE, RAIL_PUMPMODE, RAIL_OUTPUTSINUSE}) {
+                connector.SendPacket(new Dominion.Packet(railClass, code));
+            }
+        }
+        for (int outClass = OUTPUT_FIRST; outClass < OUTPUT_FIRST + 16; outClass++) {
+            for (int code : new int[]{OUTPUT_REGULATIONFLOORDUTYCYCLE, OUTPUT_STATE_AUTO, OUTPUT_USEDBYROOM}) {
+                connector.SendPacket(new Dominion.Packet(outClass, code));
+            }
+        }
+        for (var room : roomsByName.values()) {
+            for (int code : new int[]{ROOM_OUTPUTDUTYCYCLEINFOSLOW, ROOM_OUTPUTDUTYCYCLEINFOMEDIUM, ROOM_OUTPUTDUTYCYCLEINFOFAST}) {
+                connector.SendPacket(new Dominion.Packet(ROOM_FIRST + room.roomNumber, code));
+            }
+        }
+    }
+
     public List<IconRoom> listRooms() {
         return this.roomsByName.values().stream()
                 .map(IconRoomHandler::toIconRoom)

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.2]
+
+- With `logLevel: debug` the add-on now also sends read-only requests (rail/output/room duty-cycle parameters) once per update period and logs the answers as unhandled packets. Used to find out whether the controller reports valve/actuator state. Nothing is sent at other log levels, and nothing is written to the controller.
+
 ## [0.5.1]
 
 - Unhandled controller packets are logged at `debug` level (class, code, payload). Passive only: nothing new is requested from the controller. Used to find out whether the controller reports valve/actuator state that the add-on ignores.
