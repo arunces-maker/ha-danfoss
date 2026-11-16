@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.3]
+
+- With `logLevel: debug` the add-on logs every packet received from the controller (house name, class, code, payload), except the clock and the Wi-Fi scan list. The read-only valve/output requests added in 0.5.2 are removed again: the add-on only listens now. Used to find out which controller parameter changes when the Danfoss app switches Away / heating season on and off.
+
 ## [0.5.2]
 
 - With `logLevel: debug` the add-on now also sends read-only requests (rail/output/room duty-cycle parameters) once per update period and logs the answers as unhandled packets. Used to find out whether the controller reports valve/actuator state. Nothing is sent at other log levels, and nothing is written to the controller.

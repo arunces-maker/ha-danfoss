@@ -44,7 +44,7 @@ Room sensors carry the same attributes as upstream: `room_number`, `mode`, `pres
 
 **What `mode` means.** `heat` means the room is calling for heat right now (its floor-heating valves are open); `off` means it has reached its target. It is not a heating-season switch. Checked against the Danfoss Icon app: the rooms shown as heating there were exactly the rooms with `mode: heat`, and every room with `mode: heat` was below its `temperature_target`. So "all rooms `off`" means all valves are closed.
 
-**Debug logging (0.5.1+).** With `logLevel: debug` the add-on logs every packet it doesn't otherwise handle (class, code, payload). From 0.5.2 it also sends read-only requests for valve/output state once per update period. The controller itself reports only the clock (class 5) and the Wi-Fi scan list (class 2) unprompted. Keep `logLevel: info` in normal use: at `debug` the log fills up every second.
+**Debug logging (0.5.3+).** With `logLevel: debug` the add-on logs every packet it receives from the controller (house name, class, code, payload), except the clock (class 5) and the Wi-Fi scan list (class 2), which arrive every second. It only listens; nothing is requested or written. Useful for finding out which parameter the Danfoss app changes. Keep `logLevel: info` in normal use.
 
 Things to know:
 

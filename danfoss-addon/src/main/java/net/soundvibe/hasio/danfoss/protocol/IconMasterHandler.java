@@ -64,32 +64,6 @@ public class IconMasterHandler implements PacketHandler {
         }
     }
 
-    /**
-     * Debug only: asks the controller to report valve/output state (read requests, no data is written).
-     * The answers arrive as packets and are logged by the "unhandled packet" branches.
-     */
-    public void probeValveState() {
-        if (!logger.isDebugEnabled()) {
-            return;
-        }
-        logger.debug("probing valve/output state");
-        for (int railClass = RAIL_FIRST; railClass <= RAIL_LAST; railClass++) {
-            for (int code : new int[]{RAIL_GLOBALOUTPUTACTIVE, RAIL_LOCALOUTPUTACTIVE, RAIL_PUMPMODE, RAIL_OUTPUTSINUSE}) {
-                connector.SendPacket(new Dominion.Packet(railClass, code));
-            }
-        }
-        for (int outClass = OUTPUT_FIRST; outClass < OUTPUT_FIRST + 16; outClass++) {
-            for (int code : new int[]{OUTPUT_REGULATIONFLOORDUTYCYCLE, OUTPUT_STATE_AUTO, OUTPUT_USEDBYROOM}) {
-                connector.SendPacket(new Dominion.Packet(outClass, code));
-            }
-        }
-        for (var room : roomsByName.values()) {
-            for (int code : new int[]{ROOM_OUTPUTDUTYCYCLEINFOSLOW, ROOM_OUTPUTDUTYCYCLEINFOMEDIUM, ROOM_OUTPUTDUTYCYCLEINFOFAST}) {
-                connector.SendPacket(new Dominion.Packet(ROOM_FIRST + room.roomNumber, code));
-            }
-        }
-    }
-
     public List<IconRoom> listRooms() {
         return this.roomsByName.values().stream()
                 .map(IconRoomHandler::toIconRoom)
@@ -114,6 +88,13 @@ public class IconMasterHandler implements PacketHandler {
     @Override
     public void handlePacket(Dominion.Packet pkt) {
         int msgClass = pkt.getMsgClass();
+
+        // Debug only: every packet from the controller, except the clock (SYSTEM) and the Wi-Fi scan list (WIFI),
+        // which arrive constantly and aren't interesting.
+        if (logger.isDebugEnabled() && msgClass != SYSTEM && msgClass != WIFI) {
+            logger.debug("packet house={} class={} code={} payload={}",
+                    state.houseName, msgClass, pkt.getMsgCode(), pkt.payloadHex());
+        }
 
         if (msgClass >= ROOM_FIRST && msgClass <= ROOM_LAST) {
             var room = rooms[msgClass - ROOM_FIRST];
@@ -169,10 +150,6 @@ public class IconMasterHandler implements PacketHandler {
                     lock.writeLock().lock();
                     state.connectionCount = pkt.getByte();
                     lock.writeLock().unlock();
-                    break;
-                default:
-                    logger.debug("unhandled packet: class={} code={} payload={}",
-                            msgClass, pkt.getMsgCode(), pkt.payloadHex());
                     break;
             }
         }
